@@ -1,29 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function App() {
-  const [scene, setScene] = useState('A serene beach at sunset with soft waves.');
-  const [response, setResponse] = useState<any>(null);
+  const [apiKey, setApiKey] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [result, setResult] = useState("");
 
-  async function handleGenerate() {
-    try {
-      const res = await fetch('http://YOUR_DEVICE_IP:5000/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: scene })
-      });
-      const data = await res.json();
-      setResponse(data);
-    } catch (err: any) {
-      setResponse({ error: err.message });
+  const handleGenerate = async () => {
+    if (!apiKey || !prompt) {
+      alert("Isi API key dan prompt dulu!");
+      return;
     }
-  }
+    // sementara dummy, nanti sambungkan ke backend
+    setResult(`API Key: ${apiKey}\nPrompt: ${prompt}\n(Hasil dummy, sambungkan ke backend/vertex ai)`);
+  };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Veo3 Frontend (GitHub Pages)</h1>
-      <textarea value={scene} onChange={e=>setScene(e.target.value)} className="w-full border p-2 rounded mb-4" rows={3} />
-      <button onClick={handleGenerate} className="px-4 py-2 bg-blue-600 text-white rounded">Generate</button>
-      <pre className="mt-4 bg-black text-white p-3 rounded text-sm">{JSON.stringify(response, null, 2)}</pre>
+    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
+      <h1>🎬 Veo3 Generator</h1>
+      <div>
+        <label>Google API Key:</label><br />
+        <input
+          type="password"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="Masukkan API Key..."
+          style={{ width: "300px", padding: "5px" }}
+        />
+      </div>
+      <div style={{ marginTop: "1rem" }}>
+        <label>Prompt:</label><br />
+        <textarea
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Deskripsi video..."
+          rows={4}
+          style={{ width: "300px", padding: "5px" }}
+        />
+      </div>
+      <button onClick={handleGenerate} style={{ marginTop: "1rem", padding: "10px 20px" }}>
+        Generate
+      </button>
+      {result && (
+        <pre style={{ background: "#f4f4f4", marginTop: "1rem", padding: "1rem" }}>{result}</pre>
+      )}
     </div>
   );
 }
